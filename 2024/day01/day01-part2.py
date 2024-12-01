@@ -11,8 +11,5 @@ for right in right_side:
     else:
         right_occurences[right] += 1
 
-print(right_occurences)
-
 factors = [left * right_occurences[left] for left in left_side if left in right_occurences]
-
 print(sum(factors))
