@@ -31,7 +31,6 @@ initialGuardPos = guardPos
 loopings = 0
 for i in range(len(grid)):
     for j in range(len(grid[i])):
-        looping = False
         alreadyVisitedWithDirection = {}
         direction = 'UP'
         guardPos = initialGuardPos
@@ -41,7 +40,7 @@ for i in range(len(grid)):
         while not out_of_bounds(guardPos):
             guardPosWithDirection = (guardPos[0], guardPos[1], direction)
             if guardPosWithDirection in alreadyVisitedWithDirection:
-                looping = True
+                loopings += 1
                 break
             alreadyVisitedWithDirection[guardPosWithDirection] = True
             newPos = (guardPos[0] + directions[direction][0], guardPos[1] + directions[direction][1])
@@ -53,8 +52,6 @@ for i in range(len(grid)):
                 continue
             guardPos = newPos
         grid[i][j] = '.'
-        if looping:
-            loopings += 1
 
 print(loopings)
 
