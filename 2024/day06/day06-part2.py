@@ -27,31 +27,46 @@ rotateRightDirections = {
     'DOWN': 'LEFT',
     'LEFT': 'UP',
 }
+
+direction = 'UP'
+visited = 0
+alreadyVisited = {}
 initialGuardPos = guardPos
+while not out_of_bounds(guardPos):
+    if guardPos not in alreadyVisited:
+        visited += 1
+    alreadyVisited[guardPos] = True
+    newPos = (guardPos[0] + directions[direction][0], guardPos[1] + directions[direction][1])
+    if out_of_bounds(newPos):
+        guardPos = newPos
+        continue
+    if grid[newPos[0]][newPos[1]] == '#':
+        direction = rotateRightDirections[direction]
+        continue
+    guardPos = newPos
+
+paths = [(x, y) for (x, y) in alreadyVisited.keys()]
 loopings = 0
-for i in range(len(grid)):
-    for j in range(len(grid[i])):
-        alreadyVisitedWithDirection = {}
-        direction = 'UP'
-        guardPos = initialGuardPos
-        if grid[i][j] == '#':
-            continue
-        grid[i][j] = '#'
-        while not out_of_bounds(guardPos):
-            guardPosWithDirection = (guardPos[0], guardPos[1], direction)
-            if guardPosWithDirection in alreadyVisitedWithDirection:
-                loopings += 1
-                break
-            alreadyVisitedWithDirection[guardPosWithDirection] = True
-            newPos = (guardPos[0] + directions[direction][0], guardPos[1] + directions[direction][1])
-            if out_of_bounds(newPos):
-                guardPos = newPos
-                break
-            if grid[newPos[0]][newPos[1]] == '#':
-                direction = rotateRightDirections[direction]
-                continue
+for (i, j) in paths:
+    alreadyVisitedWithDirection = {}
+    direction = 'UP'
+    guardPos = initialGuardPos
+    grid[i][j] = '#'
+    while not out_of_bounds(guardPos):
+        guardPosWithDirection = (guardPos[0], guardPos[1], direction)
+        if guardPosWithDirection in alreadyVisitedWithDirection:
+            loopings += 1
+            break
+        alreadyVisitedWithDirection[guardPosWithDirection] = True
+        newPos = (guardPos[0] + directions[direction][0], guardPos[1] + directions[direction][1])
+        if out_of_bounds(newPos):
             guardPos = newPos
-        grid[i][j] = '.'
+            break
+        if grid[newPos[0]][newPos[1]] == '#':
+            direction = rotateRightDirections[direction]
+            continue
+        guardPos = newPos
+    grid[i][j] = '.'
 
 print(loopings)
 
