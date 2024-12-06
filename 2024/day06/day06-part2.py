@@ -45,9 +45,9 @@ while not out_of_bounds(guardPos):
         continue
     guardPos = newPos
 
-paths = [(x, y) for (x, y) in alreadyVisited.keys()]
+visitedPaths = [(x, y) for (x, y) in alreadyVisited.keys()]
 loopings = 0
-for (i, j) in paths:
+for (i, j) in visitedPaths:
     alreadyVisitedWithDirection = {}
     direction = 'UP'
     guardPos = initialGuardPos
