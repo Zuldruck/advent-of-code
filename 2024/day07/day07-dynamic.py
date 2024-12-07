@@ -7,13 +7,7 @@ def rec(target, operands):
     
     return (
         rec(target - operands[-1], operands[:-1]) or
-        rec(target / operands[-1], operands[:-1]) or
-        (
-            int(target) == target and
-            str(int(target)).endswith(str(operands[-1])) and
-            len(str(int(target))[:-len(str(operands[-1]))]) > 0 and
-            rec(int(str(int(target))[:-len(str(operands[-1]))]), operands[:-1])
-        )
+        rec(target / operands[-1], operands[:-1])
     )
 
 res = 0
