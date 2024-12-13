@@ -9,8 +9,6 @@ machines = [
 total_tokens = 0
 for machine in machines:
     A_X, A_Y, B_X, B_Y, price_X, price_Y = machine
-    print(price_X / A_X)
-    print(price_X / B_X)
     for a in range(1, 100):
         found = False
         for b in range(1, 100):
