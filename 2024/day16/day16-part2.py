@@ -28,68 +28,59 @@ openSet = set([startPos])
 cameFrom = {}
 gScore = {startPos: 0}
 fScore = {startPos: heuristic(startPos, endPos)}
+cameFroms = {}
 
 while len(openSet) > 0:
     current = min(openSet, key=lambda pos: fScore[pos])
-    if current == endPos:
-        break
-
-    openSet.remove(current)
-    for direction in directions:
-        newPos = (current[0] + directions[direction][0], current[1] + directions[direction][1])
-        if out_of_bounds(newPos) or maze[newPos[0]][newPos[1]] == "#":
-            continue
-
-        tentative_gScore = gScore[current] + 1
-        if current in cameFrom and cameFrom[current][0] != newPos[0] and cameFrom[current][1] != newPos[1]:
-            tentative_gScore += 1000
-        if current == startPos and direction == "UP":
-            tentative_gScore += 1000
-        if newPos not in gScore or tentative_gScore < gScore[newPos]:
-            cameFrom[newPos] = current
-            gScore[newPos] = tentative_gScore
-            fScore[newPos] = tentative_gScore + heuristic(newPos, endPos)
-            if newPos not in openSet:
-                openSet.add(newPos)
-
-bestScore = gScore[endPos]
-openSet = set([startPos])
-cameFrom = {}
-gScore = {startPos: 0}
-fScore = {startPos: heuristic(startPos, endPos)}
-visited = set()
-
-while len(openSet) > 0:
-    current = min(openSet, key=lambda pos: fScore[pos])
-
+    
     openSet.remove(current)
     if current == endPos:
-        path = current
-        while path in cameFrom:
-            visited.add(path)
-            path = cameFrom[path]
         continue
 
+    currentGScore = gScore[current]
     for direction in directions:
         newPos = (current[0] + directions[direction][0], current[1] + directions[direction][1])
-        if out_of_bounds(newPos) or maze[newPos[0]][newPos[1]] == "#":
+        if out_of_bounds(newPos) or maze[newPos[0]][newPos[1]] == "#" or newPos == cameFrom.get(current, None):
             continue
 
-        tentative_gScore = gScore[current] + 1
+        angle = False
         if current in cameFrom and cameFrom[current][0] != newPos[0] and cameFrom[current][1] != newPos[1]:
+            angle = True
+
+        tentative_gScore = currentGScore + 1
+        if angle:
             tentative_gScore += 1000
         if current == startPos and direction == "UP":
             tentative_gScore += 1000
-        if tentative_gScore > bestScore:
-            continue
-        if newPos not in gScore or tentative_gScore < gScore[newPos]:
+        
+        if newPos not in gScore or tentative_gScore <= gScore[newPos]:
+            if angle:
+                gScore[current] = currentGScore + 1000
             cameFrom[newPos] = current
+            if newPos not in cameFroms or tentative_gScore < gScore[newPos]:
+                cameFroms[newPos] = set()
+            cameFroms[newPos].add(current)
             gScore[newPos] = tentative_gScore
             fScore[newPos] = tentative_gScore + heuristic(newPos, endPos)
-            if newPos not in openSet:
-                openSet.add(newPos)
-        
+            openSet.add(newPos)
+
+print(gScore[endPos])
+
+def get_paths(current, visited):
+    if current not in cameFroms:
+        return
+    for prev in cameFroms[current]:
+        if prev in visited:
+            continue
+        visited.add(prev)
+        get_paths(prev, visited)
+
+visited = set()
+get_paths(endPos, visited)
+
+print(len(visited) + 1)
+
 for i in range(len(maze)):
     for j in range(len(maze[0])):
-        print("X" if (i, j) in visited else maze[i][j], end="")
+        print("O" if (i, j) in visited else maze[i][j], end="")
     print()
