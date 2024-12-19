@@ -42,5 +42,4 @@ while pointer < len(program):
 print('reg_a:', reg_a)
 print('reg_b:', reg_b)
 print('reg_c:', reg_c)
-print(output)
-print(",".join(output))
+print("Program:", ",".join(output))
